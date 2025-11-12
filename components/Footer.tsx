@@ -9,7 +9,6 @@ import { IoMdMail } from "react-icons/io";
 import { FaPhone } from "react-icons/fa6";
 import { FaFacebookF } from "react-icons/fa";
 import { PiInstagramLogoFill } from "react-icons/pi";
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { BiDumbbell } from "react-icons/bi";
