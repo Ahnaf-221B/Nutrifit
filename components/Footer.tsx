@@ -117,9 +117,10 @@ export default function Footer() {
               <div className="flex flex-col gap-2">
                 <div className="grid grid-cols-3 lg:grid-cols-1 text-center gap-2">
                   {[
-                    { name: "Exercizes", href: "#exercize" },
+                    { name: "Idea", href: "#idea" },
                     { name: "Features", href: "#features" },
                     { name: "Services", href: "#services" },
+                    { name: "FAQs", href: "#faq" },
                   ].map((link) => (
                     <Link key={link.name} href={link.href}>
                       <motion.h1

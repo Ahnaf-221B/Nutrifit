@@ -1,4 +1,5 @@
 import Banner from "@/components/Banner";
+import Features from "@/components/Features";
 import Idea from "@/components/Idea";
 
 export default function Home() {
@@ -6,6 +7,7 @@ export default function Home() {
     <div className="mx-auto justify-center">
       <Banner />
       <Idea />
+      <Features />
     </div>
   );
 }
