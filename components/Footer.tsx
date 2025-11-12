@@ -119,7 +119,6 @@ export default function Footer() {
                   {[
                     { name: "Idea", href: "#idea" },
                     { name: "Features", href: "#features" },
-                    { name: "Services", href: "#services" },
                     { name: "FAQs", href: "#faq" },
                   ].map((link) => (
                     <Link key={link.name} href={link.href}>
