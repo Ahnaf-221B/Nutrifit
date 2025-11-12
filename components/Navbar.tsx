@@ -23,9 +23,11 @@ const Navbar = () => {
   const [isPastThreshold, setIsPastThreshold] = useState(false);
 
   const links = [
-    { href: "#exercize" as const, label: "Exercize" },
+    { href: "/" as const, label: "Home" },
+    { href: "#idea" as const, label: "Idea" },
     { href: "#features" as const, label: "Features" },
     { href: "#services" as const, label: "Services" },
+    { href: "#faq" as const, label: "FAQs" },
     // { href: "/dashboard" as const, label: "Dashboard" },
   ];
 

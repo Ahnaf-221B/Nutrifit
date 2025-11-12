@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 
 export interface IdeaProps {
     onGetStarted?: () => void;
@@ -24,7 +25,7 @@ const DEFAULT_DATA: IdeaDataItem[] = [
         mainImage: "/images/Idea/image-01.jpg",
         smallImage: "/images/Idea/image-02.jpg",
         pillText: "Think Less\nLift More",
-        bg: "#E7FF7A",
+        bg: "#BFFF00",
         captionTop: "A Brighter Future Starts",
         captionBottom: "With The Healthy Life",
     },
@@ -52,7 +53,6 @@ export const Idea: React.FC<IdeaProps> = ({
     autoplayInterval = 4000,
 }) => {
     const [data] = useState<IdeaDataItem[]>(DEFAULT_DATA);
-
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const autoplayRef = useRef<number | null>(null);
 
@@ -83,13 +83,44 @@ export const Idea: React.FC<IdeaProps> = ({
 
     const current = data[Math.max(0, Math.min(activeIndex, data.length - 1))];
 
+    const imageVariants = {
+        enter: {
+            y: "100%",
+            opacity: 0,
+        },
+        center: {
+            y: 0,
+            opacity: 1,
+        },
+        exit: {
+            x: "100%",
+            opacity: 0,
+        },
+    };
+
+    const pillVariants = {
+        enter: {
+            y: "50%",
+            opacity: 0,
+        },
+        center: {
+            y: 0,
+            opacity: 1,
+        },
+        exit: {
+            x: "50%",
+            opacity: 0,
+        },
+    };
+
     return (
         <section
+            id="idea"
             aria-label="Hero: Move to maintain your health"
             className="w-full px-6 py-12 md:py-20"
         >
             <div className="md:max-w-[92%] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* LEFT - Text block (rendered first so on mobile it appears on top) */}
+                {/* LEFT - Text block */}
                 <div className="flex flex-col justify-between">
                     <div>
                         <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight text-slate-900">
@@ -104,7 +135,7 @@ export const Idea: React.FC<IdeaProps> = ({
                         </p>
                     </div>
 
-                    {/* progress segments below text */}
+                    {/* progress segments */}
                     <div className="mt-8 lg:mt-0">
                         <div className="flex items-center justify-end space-x-3 max-w-xl">
                             {data.map((_, idx) => (
@@ -112,8 +143,9 @@ export const Idea: React.FC<IdeaProps> = ({
                                     key={idx}
                                     aria-label={`Go to item ${idx + 1}`}
                                     onClick={() => setActiveIndex(idx)}
-                                    className={`h-2 flex-1 rounded-full transition-colors duration-300 ${activeIndex === idx ? "bg-slate-900" : "bg-slate-200"
-                                        }`}
+                                    className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
+                                        activeIndex === idx ? "bg-[#1A232D]" : "bg-[#FF6600]"
+                                    }`}
                                 />
                             ))}
                         </div>
@@ -125,38 +157,73 @@ export const Idea: React.FC<IdeaProps> = ({
                     <div className="flex flex-col lg:flex-row gap-5 items-stretch lg:h-[900px]">
                         {/* Large main card */}
                         <div className="relative lg:flex-3 flex-1 rounded-2xl overflow-hidden shadow-lg min-h-[500px] h-full bg-white">
-                            <Image
-                                src={current.mainImage}
-                                alt={current.captionTop || "Main hero image"}
-                                fill
-                                className="object-cover object-top"
-                                priority
-                            />
-                            <div className="absolute left-6 bottom-6 right-6 bg-linear-to-t from-black/45 via-black/20 to-transparent rounded-xl p-4">
-                                <p className="text-white text-2xl sm:text-3xl font-semibold leading-tight">
-                                    {current.captionTop}
-                                    <br />
-                                    {current.captionBottom}
-                                </p>
+                            <AnimatePresence mode="wait" initial={false}>
+                                <motion.div
+                                    key={`main-${current.id}`}
+                                    variants={imageVariants}
+                                    initial="enter"
+                                    animate="center"
+                                    exit="exit"
+                                    transition={{
+                                        duration: 0.6,
+                                        ease: [0.22, 1, 0.36, 1],
+                                    }}
+                                    className="absolute inset-0"
+                                >
+                                    <Image
+                                        src={current.mainImage}
+                                        alt={current.captionTop || "Main hero image"}
+                                        fill
+                                        className="object-cover object-top"
+                                        priority
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
+                            <div className="absolute left-6 bottom-6 right-6 bg-linear-to-t from-black/45 via-black/20 to-transparent rounded-xl p-4 z-10">
+                                <AnimatePresence mode="wait">
+                                    <motion.p
+                                        key={`caption-${current.id}`}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="text-white text-2xl sm:text-3xl font-semibold leading-tight"
+                                    >
+                                        {current.captionTop}
+                                        <br />
+                                        {current.captionBottom}
+                                    </motion.p>
+                                </AnimatePresence>
                             </div>
                         </div>
 
                         {/* Right stacked column */}
                         <div className="lg:flex-1 w-full flex flex-col gap-5 h-full">
-                            <div
-                                role="button"
-                                onClick={() => setActiveIndex((i) => (i + 1) % data.length)}
-                                tabIndex={0}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") setActiveIndex((i) => (i + 1) % data.length);
-                                }}
-                                className="rounded-2xl p-4 flex items-center justify-center min-h-[110px] lg:h-1/4 cursor-pointer select-none transition-all duration-300"
-                                style={{ background: current.bg || "#E7FF7A" }}
-                            >
-                                <div className="text-slate-900 font-bold text-lg leading-tight whitespace-pre-line text-center">
-                                    {current.pillText}
-                                </div>
-                            </div>
+                            <AnimatePresence mode="wait" initial={false}>
+                                <motion.div
+                                    key={`pill-${current.id}`}
+                                    variants={pillVariants}
+                                    initial="enter"
+                                    animate="center"
+                                    exit="exit"
+                                    transition={{
+                                        duration: 0.5,
+                                        ease: [0.22, 1, 0.36, 1],
+                                    }}
+                                    role="button"
+                                    onClick={() => setActiveIndex((i) => (i + 1) % data.length)}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") setActiveIndex((i) => (i + 1) % data.length);
+                                    }}
+                                    className="rounded-2xl p-4 flex items-center justify-center min-h-[110px] lg:h-1/4 cursor-pointer select-none"
+                                    style={{ background: current.bg || "#E7FF7A" }}
+                                >
+                                    <div className="text-slate-900 font-bold text-lg leading-tight whitespace-pre-line text-center">
+                                        {current.pillText}
+                                    </div>
+                                </motion.div>
+                            </AnimatePresence>
 
                             <div
                                 onClick={() => setActiveIndex((i) => (i + 1) % data.length)}
@@ -165,19 +232,34 @@ export const Idea: React.FC<IdeaProps> = ({
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") setActiveIndex((i) => (i + 1) % data.length);
                                 }}
-                                className="relative rounded-2xl overflow-hidden bg-white shadow-md cursor-pointer transition-all duration-300 lg:h-3/4 min-h-[500px]"
+                                className="relative rounded-2xl overflow-hidden bg-white shadow-md cursor-pointer lg:h-3/4 min-h-[500px]"
                             >
-                                <Image
-                                    src={current.smallImage}
-                                    alt="Supporting small image"
-                                    fill
-                                    className="object-cover"
-                                />
+                                <AnimatePresence mode="wait" initial={false}>
+                                    <motion.div
+                                        key={`small-${current.id}`}
+                                        variants={imageVariants}
+                                        initial="enter"
+                                        animate="center"
+                                        exit="exit"
+                                        transition={{
+                                            duration: 0.6,
+                                            ease: [0.22, 1, 0.36, 1],
+                                        }}
+                                        className="absolute inset-0"
+                                    >
+                                        <Image
+                                            src={current.smallImage}
+                                            alt="Supporting small image"
+                                            fill
+                                            className="object-cover md:object-top"
+                                        />
+                                    </motion.div>
+                                </AnimatePresence>
                             </div>
                         </div>
                     </div>
 
-                    {/* Invisible anchor used by default Get Started */}
+                    {/* Invisible anchor */}
                     <div id="hero-next" className="hidden" />
                 </div>
             </div>
