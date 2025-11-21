@@ -14,6 +14,7 @@ import "swiper/css/pagination";
 import GoogleIcon from "@/components/icons/GoogleIcon";
 import { BiDumbbell } from "react-icons/bi";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabaseClient";
 
 const data = [
     {
@@ -42,6 +43,8 @@ const data = [
     },
 ];
 
+
+
 export default function Page() {
     const [formData, setFormData] = useState({
         email: "",
@@ -51,70 +54,42 @@ export default function Page() {
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError("");
-        setIsLoading(true);
+			e.preventDefault();
+			setError("");
+			setIsLoading(true);
 
-        try {
-            // Validate inputs
-            if (!formData.email || !formData.password) {
-                setError("Please fill in all fields");
-                setIsLoading(false);
-                return;
-            }
-            if (!/\S+@\S+\.\S+/.test(formData.email)) {
-                setError("Please enter a valid email address");
-                setIsLoading(false);
-                return;
-            }
-            if (formData.password.length < 6) {
-                setError("Password must be at least 6 characters");
-                setIsLoading(false);
-                return;
-            }
+			const { email, password } = formData;
 
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+			const { data, error } = await supabase.auth.signInWithPassword({
+				email,
+				password,
+			});
 
-            // Here you would typically call your authentication API
-            // const response = await fetch('/api/auth/login', {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify(formData)
-            // });
-            // const data = await response.json();
+			if (error) {
+				setError(error.message);
+				setIsLoading(false);
+				return;
+			}
 
-            console.log("Login successful:", formData);
+			// redirect to dashboard
+			window.location.href = "/dashboard";
+		};
 
-            // On success, redirect to dashboard
-            // window.location.href = '/dashboard';
-            alert("Login successful! (This is a demo)");
-        } catch (err) {
-            setError("Login failed. Please try again.");
-            console.error("Login error:", err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+     const handleGoogleLogin = async () => {
+				setIsLoading(true);
 
-    const handleGoogleLogin = async () => {
-        setIsLoading(true);
-        try {
-            // Simulate Google OAuth
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            
-            // Here you would typically initiate Google OAuth flow
-            // window.location.href = '/api/auth/google';
-            
-            console.log("Google login initiated");
-            alert("Google login would start here (This is a demo)");
-        } catch (err) {
-            setError("Google login failed. Please try again.");
-            console.error("Google login error:", err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+				const { error } = await supabase.auth.signInWithOAuth({
+					provider: "google",
+					options: {
+						redirectTo: "http://localhost:3000/auth/callback",
+					},
+				});
+
+				if (error) {
+					setError(error.message);
+					setIsLoading(false);
+				}
+			};
 
     const handleInputChange = (field: string, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
