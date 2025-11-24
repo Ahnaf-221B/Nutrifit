@@ -29,7 +29,7 @@ export default function AuthCallback() {
 
 			if (profilesError || !profiles) {
 				// User not registered, delete from Supabase auth
-				await fetch("/api/auth/delete-user", {
+				await fetch("/api/delete-user", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ userId: user.id }),
