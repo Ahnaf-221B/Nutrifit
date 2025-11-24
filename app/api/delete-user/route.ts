@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
 	try {
 		const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
 		if (error) throw error;
-
 		return NextResponse.json({ message: "User deleted successfully" });
+		
 	} catch (err: unknown) {
 		const errorMessage = err instanceof Error ? err.message : "Unknown error";
 		return NextResponse.json(
