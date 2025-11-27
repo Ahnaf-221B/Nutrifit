@@ -23,7 +23,9 @@ export default function ClientLayout({
     "/privacy-policy",
   ];
  
-  const hideLayout = hiddenRoutes.includes(pathname);
+  const hideLayout =
+  hiddenRoutes.includes(pathname) ||
+  pathname.startsWith("/dashboard");
   const hideNavbar = hiddenNavbar.includes(pathname);
  
   return (

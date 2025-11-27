@@ -22,14 +22,14 @@ const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isPastThreshold, setIsPastThreshold] = useState(false);
-  const [user, setUser] = useState<any>(null); // Track logged-in user
+  const [user, setUser] = useState<unknown>(null);
 
   const links = [
     { href: "/" as const, label: "Home" },
     { href: "#idea" as const, label: "Idea" },
     { href: "#features" as const, label: "Features" },
     { href: "#faq" as const, label: "FAQs" },
-    // { href: "/dashboard" as const, label: "Dashboard" },
+    { href: "/dashboard" as const, label: "Dashboard" },
   ];
 
   const handleLinkClick = (index: number) => {
