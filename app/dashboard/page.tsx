@@ -38,7 +38,7 @@ export default function DashboardPage() {
 			<DailyMealPlanCard userId={user.id} />
 			<DailyWorkoutCard userId={user.id} />
 			<h1 className="text-2xl font-bold text-[#1A232D]">Dashboard</h1>
-			<p className="text-[#1A232D]">Welcome back, {user.email}!</p>
+			<p className="text-[#1A232D]">Welcome back!! {user.email}!</p>
 		</div>
 	);
 }
