@@ -1,19 +1,13 @@
-//dashboard/components/workout/DailyWorkoutCard.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-// Import simple icons for visual clarity (using lucide-react, common in Next.js)
-import { Dumbbell, Clock, XCircle, ChevronRight } from "lucide-react";
+import { FaDumbbell, FaClock, FaTimesCircle, FaChevronRight, FaArrowUp  } from "react-icons/fa";
 
 type Exercise = {
-	exercise: string; // The property name in your JSON is 'exercise'
+	exercise: string;
 	sets?: number;
 	reps?: number;
-	duration?: string; // e.g., "15 mins"
-};
-
-type WorkoutPlanData = {
-	workoutPlan: Exercise[];
+	duration?: string;
 };
 
 export default function DailyWorkoutCard({ userId }: { userId: string }) {
@@ -24,20 +18,17 @@ export default function DailyWorkoutCard({ userId }: { userId: string }) {
 	useEffect(() => {
 		async function fetchWorkoutPlan() {
 			try {
-				
 				const res = await fetch(`/api/workout-plan?userId=${userId}`);
 				const data = await res.json();
 
 				if (res.ok) {
-					
 					setWorkoutPlan(data.workoutPlan || []);
 				} else {
-					
 					setError(data.error || "Failed to fetch workout plan.");
 				}
 			} catch (err) {
 				setError("An error occurred while connecting to the server.");
-				console.error("Workout Plan Fetch Error:", err);
+				console.error(err);
 			} finally {
 				setLoading(false);
 			}
@@ -46,76 +37,111 @@ export default function DailyWorkoutCard({ userId }: { userId: string }) {
 		fetchWorkoutPlan();
 	}, [userId]);
 
-	// --- Conditional Rendering for States ---
-
-	if (loading) return <p className="text-gray-500">Loading workout plan...</p>;
+	if (loading)
+		return (
+			<div className="bg-white p-8 rounded-3xl shadow-2xl border-2 border-gray-200 text-center">
+				<div className="flex items-center justify-center space-x-3">
+					<div className="w-3 h-3 rounded-full animate-bounce bg-[#BFFF00]" />
+					<div className="w-3 h-3 rounded-full animate-bounce bg-[#BFFF00]" style={{ animationDelay: "0.1s" }} />
+					<div className="w-3 h-3 rounded-full animate-bounce bg-[#BFFF00]" style={{ animationDelay: "0.2s" }} />
+				</div>
+				<p className="text-gray-600 mt-4 font-medium">Loading your workout plan...</p>
+			</div>
+		);
 
 	if (error)
 		return (
-			<div className="bg-red-100 p-4 rounded-xl flex items-center gap-2 text-red-700 shadow-md">
-				<XCircle size={20} />
-				<p className="font-medium">Error: {error}</p>
+			<div className="bg-red-50 p-6 rounded-3xl shadow-xl border-2 border-red-300 flex items-center gap-3 text-red-700">
+				<FaTimesCircle size={24} />
+				<div>
+					<p className="font-bold text-lg">Error Loading Plan</p>
+					<p className="text-sm text-red-600 mt-1">{error}</p>
+				</div>
 			</div>
 		);
 
 	if (!workoutPlan || workoutPlan.length === 0)
 		return (
-			<div className="p-6 bg-yellow-50 rounded-xl border border-yellow-200 shadow-md mt-6">
-				<p className="text-yellow-800 font-medium">
-					No workout plan available. Update your fitness goal!
+			<div className="bg-white p-8 rounded-3xl shadow-xl border-2 border-gray-200 text-center">
+				<FaDumbbell size={48} className="mx-auto mb-4 text-gray-400" />
+				<p className="text-gray-600 font-medium">
+					No workout plan available. Set your fitness goal to get started!
 				</p>
 			</div>
 		);
 
-	// --- Render Workout Plan ---
+	// Determine Goal Badge
+	let goalMessage = "";
+	const totalDuration = workoutPlan.reduce((sum, ex) => {
+		if (!ex.duration) return sum;
+		const mins = parseInt(ex.duration) || 0;
+		return sum + mins;
+	}, 0);
+
+	const strengthExercises = workoutPlan.filter(ex => ex.sets && ex.reps).length;
+	const cardioExercises = workoutPlan.filter(ex => ex.duration && !ex.sets && !ex.reps).length;
+
+	if (strengthExercises >= cardioExercises) goalMessage = "Strength Focus 💪";
+	else if (cardioExercises > strengthExercises) goalMessage = "Cardio Focus 🏃‍♂️";
+	else goalMessage = "Balanced Training ⚖️";
 
 	return (
-		<div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mt-6">
-			<h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2">
-				<Dumbbell className="text-indigo-600" size={24} />
-				Todays Workout Plan
-			</h2>
+		<div className="bg-white p-8 rounded-3xl shadow-2xl border-2 border-gray-100 relative overflow-hidden">
+			{/* Glow accents */}
+			<div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10 bg-[#BFFF00]" />
+			<div className="absolute bottom-0 left-0 w-96 h-96 rounded-full blur-3xl opacity-10 bg-[#FF6600]" />
 
-			<div className="space-y-4">
+			{/* Header */}
+			<div className="relative z-10 mb-4 flex items-center gap-4">
+				<div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg bg-gradient-to-br from-[#BFFF00] to-[#9FDF00]">
+					<FaDumbbell size={26} color="#1A232D" />
+				</div>
+				<div>
+					<h2 className="text-3xl md:text-4xl font-black tracking-tight text-[#1A232D]">
+						Today's Workout
+					</h2>
+					<p className="text-gray-600 text-sm font-medium">Achieve your fitness goals</p>
+				</div>
+			</div>
+
+			{/* Goal Badge */}
+			<div className="mb-6 flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full bg-[#1A232D]/90 text-white w-fit">
+				<FaArrowUp  size={14} />
+				<span>{goalMessage}</span>
+			</div>
+
+			{/* Workout Cards */}
+			<div className="relative z-10 space-y-4">
 				{workoutPlan.map((exercise, index) => (
 					<div
 						key={index}
-						className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 transition duration-150 hover:bg-indigo-50"
+						className="bg-gradient-to-r from-white to-gray-50 p-5 rounded-2xl border-2 border-gray-200 hover:border-[#BFFF00] hover:shadow-xl transition-all duration-300 flex justify-between items-center"
 					>
-						{/* Left Side: Exercise Name and Type */}
-						<div className="flex-1 min-w-0">
-							<h3 className="text-lg font-bold text-gray-800 truncate">
-								{exercise.exercise}
-							</h3>
-							{/* Sets and Reps Display (for strength exercises) */}
-							{exercise.sets && exercise.reps && (
-								<div className="mt-1 flex items-center text-sm text-gray-600 space-x-4">
-									<div className="flex items-center gap-1">
-										<span className="font-medium text-indigo-600">
-											{exercise.sets}
+						<div className="flex items-center gap-4">
+							<div className="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center shadow-md text-2xl">
+								🏋️
+							</div>
+							<div>
+								<h4 className="text-xl font-black text-[#1A232D] truncate">
+									{exercise.exercise}
+								</h4>
+								<div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+									{exercise.sets && exercise.reps && (
+										<span>
+											<strong className="text-[#FF6600]">{exercise.sets}</strong> sets |{" "}
+											<strong className="text-[#FF6600]">{exercise.reps}</strong> reps
 										</span>
-										<span className="text-gray-500">sets</span>
-									</div>
-									<span className="text-gray-300">|</span>
-									<div className="flex items-center gap-1">
-										<span className="font-medium text-indigo-600">
-											{exercise.reps}
+									)}
+									{exercise.duration && (
+										<span className="flex items-center gap-1">
+											<FaClock size={14} className="text-[#BFFF00]" />
+											{exercise.duration}
 										</span>
-										<span className="text-gray-500">reps</span>
-									</div>
+									)}
 								</div>
-							)}
-							{/* Duration Display (for cardio/time-based exercises) */}
-							{exercise.duration && (
-								<div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
-									<Clock size={16} className="text-indigo-400" />
-									<span>{exercise.duration}</span>
-								</div>
-							)}
+							</div>
 						</div>
-
-						{/* Right Side: Action/Indicator */}
-						<ChevronRight size={20} className="text-gray-400 ml-4" />
+						<FaChevronRight size={20} className="text-gray-400" />
 					</div>
 				))}
 			</div>
