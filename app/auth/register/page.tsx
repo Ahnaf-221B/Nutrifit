@@ -18,36 +18,37 @@ import { BiDumbbell } from "react-icons/bi";
 import { cn } from "@/lib/utils";
 
 const data = [
-  {
-    id: 1,
-    title: "AI-Powered Meal Plans",
-    description:
-      "Get personalized nutrition plans tailored to your fitness goals, dietary preferences, and lifestyle.",
-    btnText: "Start Your Journey →",
-    thumbnail: "/images/Auth/image-05.jpg",
-  },
-  {
-    id: 2,
-    title: "Track Your Progress",
-    description:
-      "Monitor workouts, water intake, and calories with real-time analytics and insights.",
-    btnText: "See Your Stats →",
-    thumbnail: "/images/Auth/image-04.jpg",
-  },
-  {
-    id: 3,
-    title: "24/7 AI Health Coach",
-    description:
-      "Get instant answers to nutrition questions, workout tips, and motivation whenever you need it.",
-    btnText: "Chat Now →",
-    thumbnail: "/images/Auth/image-03.jpg",
-  },
+	{
+		id: 1,
+		title: "AI-Powered Meal Plans",
+		description:
+			"Get personalized nutrition plans tailored to your fitness goals, dietary preferences, and lifestyle.",
+		btnText: "Start Your Journey →",
+		thumbnail: "/images/Auth/image-05.jpg",
+	},
+	{
+		id: 2,
+		title: "Track Your Progress",
+		description:
+			"Monitor workouts, water intake, and calories with real-time analytics and insights.",
+		btnText: "See Your Stats →",
+		thumbnail: "/images/Auth/image-04.jpg",
+	},
+	{
+		id: 3,
+		title: "24/7 AI Health Coach",
+		description:
+			"Get instant answers to nutrition questions, workout tips, and motivation whenever you need it.",
+		btnText: "Chat Now →",
+		thumbnail: "/images/Auth/image-03.jpg",
+	},
 ];
 
 
 import { supabase } from "@/lib/supabaseClient";
+import { Bounce, toast } from "react-toastify";
 
-export async function signUpUser(formData:any) {
+export async function signUpUser(formData: any) {
 	const {
 		full_name,
 		email,
@@ -91,130 +92,131 @@ export async function signUpUser(formData:any) {
 }
 
 export default function RegisterPage() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [step, setStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    full_name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    gender: "",
-    age: "",
-    height_cm: "",
-    weight_kg: "",
-    fitness_goal: "",
-    activity_level: "",
-  });
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [step, setStep] = useState(1);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState("");
+	const [formData, setFormData] = useState({
+		full_name: "",
+		email: "",
+		phone: "",
+		password: "",
+		confirmPassword: "",
+		gender: "",
+		age: "",
+		height_cm: "",
+		weight_kg: "",
+		fitness_goal: "",
+		activity_level: "",
+	});
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setError("");
-  };
+	const handleInputChange = (field: string, value: string) => {
+		setFormData((prev) => ({ ...prev, [field]: value }));
+		setError("");
+	};
 
-  const validateStep1 = () => {
-    if (!formData.full_name || !formData.email || !formData.phone) {
-      setError("Please fill in all required fields");
-      return false;
-    }
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      setError("Please enter a valid email address");
-      return false;
-    }
-    if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {
-      setError("Please enter a valid phone number");
-      return false;
-    }
-    return true;
-  };
+	const validateStep1 = () => {
+		if (!formData.full_name || !formData.email || !formData.phone) {
+			setError("Please fill in all required fields");
+			return false;
+		}
+		if (!/\S+@\S+\.\S+/.test(formData.email)) {
+			setError("Please enter a valid email address");
+			return false;
+		}
+		if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {
+			setError("Please enter a valid phone number");
+			return false;
+		}
+		return true;
+	};
 
-  const validateStep2 = () => {
-    if (!formData.password || !formData.confirmPassword) {
-      setError("Please fill in all password fields");
-      return false;
-    }
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
-      return false;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return false;
-    }
-    return true;
-  };
+	const validateStep2 = () => {
+		if (!formData.password || !formData.confirmPassword) {
+			setError("Please fill in all password fields");
+			return false;
+		}
+		if (formData.password.length < 6) {
+			setError("Password must be at least 6 characters");
+			return false;
+		}
+		if (formData.password !== formData.confirmPassword) {
+			setError("Passwords do not match");
+			return false;
+		}
+		return true;
+	};
 
-  const validateStep3 = () => {
-    if (!formData.gender || !formData.age || !formData.height_cm || !formData.weight_kg || !formData.fitness_goal || !formData.activity_level) {
-      setError("Please fill in all fitness profile fields");
-      return false;
-    }
-    if (parseInt(formData.age) < 13 || parseInt(formData.age) > 120) {
-      setError("Please enter a valid age");
-      return false;
-    }
-    return true;
-  };
+	const validateStep3 = () => {
+		if (!formData.gender || !formData.age || !formData.height_cm || !formData.weight_kg || !formData.fitness_goal || !formData.activity_level) {
+			setError("Please fill in all fitness profile fields");
+			return false;
+		}
+		if (parseInt(formData.age) < 13 || parseInt(formData.age) > 120) {
+			setError("Please enter a valid age");
+			return false;
+		}
+		return true;
+	};
 
-  const handleNext = () => {
-    setError("");
-    if (step === 1 && !validateStep1()) return;
-    if (step === 2 && !validateStep2()) return;
-    setStep((prev) => prev + 1);
-  };
+	const handleNext = () => {
+		setError("");
+		if (step === 1 && !validateStep1()) return;
+		if (step === 2 && !validateStep2()) return;
+		setStep((prev) => prev + 1);
+	};
 
-  const handleBack = () => {
-    setError("");
-    setStep((prev) => prev - 1);
-  };
+	const handleBack = () => {
+		setError("");
+		setStep((prev) => prev - 1);
+	};
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    
-    if (!validateStep3()) return;
-    
-    setIsLoading(true);
-    
-    try {
-      const response = await signUpUser(formData);
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setError("");
+
+		if (!validateStep3()) return;
+
+		setIsLoading(true);
+
+		try {
+			const response = await signUpUser(formData);
 
 			if (response.error) {
 				setError(response.error.message || "Registration failed");
 				return;
 			}
 
-			alert("Account created successfully!");
-			window.location.href = "/auth/login";
+			// ✅ Show success toast with verification message
+			toast.success(
+				"Account created successfully! Please check your email to verify your account.",
+				{
+					position: "top-right",
+					autoClose: 1800,
+					hideProgressBar: false,
+					closeOnClick: true,
+					pauseOnHover: true,
+					draggable: true,
+					transition: Bounce,
+					theme: "colored",
+				}
+			);
 
-      
-      // Redirect to login or dashboard
-      // window.location.href = '/login';
-    } catch (err) {
-      setError("Registration failed. Please try again.");
-      console.error("Registration error:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+			setTimeout(() => {
+				window.location.href = "/auth/login";
+			}, 2000);
 
-  const handleGoogleSignup = async () => {
-    setIsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log("Google signup initiated");
-      alert("Google signup would start here (This is a demo)");
-    } catch (err) {
-      setError("Google signup failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+		} catch (err) {
+			setError("Registration failed. Please try again.");
+			console.error("Registration error:", err);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
-  return (
+
+	return (
 		<div className="min-h-screen flex items-center justify-center px-4 lg:px-8 bg-linear-to-br from-orange-50 via-white to-slate-50">
 			<div className="w-full max-w-[1100px] grid grid-cols-1 md:grid-cols-2 items-center gap-12">
 				{/* LEFT: Swiper + Info */}
@@ -310,9 +312,8 @@ export default function RegisterPage() {
 						{[1, 2, 3].map((num) => (
 							<div
 								key={num}
-								className={`h-2 rounded-full transition-all ${
-									num === step ? "w-8 bg-[#FF6600]" : "w-2 bg-gray-300"
-								}`}
+								className={`h-2 rounded-full transition-all ${num === step ? "w-8 bg-[#FF6600]" : "w-2 bg-gray-300"
+									}`}
 							/>
 						))}
 					</div>
@@ -390,24 +391,6 @@ export default function RegisterPage() {
 									/>
 								</div>
 
-								{/* Divider */}
-								<div className="flex items-center gap-2 my-6">
-									<div className="flex-1 h-px bg-gray-300"></div>
-									<span className="text-sm text-gray-500">OR</span>
-									<div className="flex-1 h-px bg-gray-300"></div>
-								</div>
-
-								{/* Google Signup */}
-								<Button
-									type="button"
-									onClick={handleGoogleSignup}
-									disabled={isLoading}
-									variant="outline"
-									className="flex items-center justify-center gap-2 w-full h-[55px] border-gray-300 hover:bg-gray-50 hover:border-[#FF6600] transition-all"
-								>
-									<GoogleIcon className="w-5 h-5" />
-									Continue with Google
-								</Button>
 							</>
 						)}
 
