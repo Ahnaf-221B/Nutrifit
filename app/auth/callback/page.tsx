@@ -3,83 +3,103 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AuthCallback() {
-	const router = useRouter();
-	const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		const verifyUser = async () => {
-			const {
-				data: { user },
-				error: userError,
-			} = await supabase.auth.getUser();
+  useEffect(() => {
+    const verifyUser = async () => {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-			if (userError || !user) {
-				setError("Unable to get user session.");
-				return;
-			}
+      if (userError || !user) {
+        setError("Unable to get user session.");
+        toast.error("Google login failed ❌", { theme: "colored" });
+        return;
+      }
 
-			// Check if user email exists in profiles table
-			const { data: profiles, error: profilesError } = await supabase
-				.from("profiles")
-				.select("id, email")
-				.eq("email", user.email)
-				.single();
+      // 🔍 Check if user email exists in profiles table
+      const { data: profiles, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, email")
+        .eq("email", user.email)
+        .single();
 
-			if (profilesError || !profiles) {
-				// User not registered, delete from Supabase auth
-				await fetch("/api/delete-user", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ userId: user.id }),
-				});
+      if (profilesError || !profiles) {
+        // ❌ User not registered → delete auth user
+        await fetch("/api/delete-user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: user.id }),
+        });
 
-				await supabase.auth.signOut();
-				router.replace("/auth/login?error=not_registered");
-				return;
-			}
+        await supabase.auth.signOut();
 
-			// User is registered, redirect to dashboard
-			router.replace("/dashboard");
-		};
+        toast.error("You are not registered. Please sign up first ❌", {
+          autoClose: 2000,
+          theme: "colored",
+        });
 
-		verifyUser();
-	}, [router]);
+        setTimeout(() => {
+          router.replace("/auth/login?error=not_registered");
+        }, 1800);
 
-	return (
-		<div className="min-h-screen flex items-center justify-center flex-col px-4">
-			{error ? (
-				<p className="text-red-500 text-lg font-semibold animate-pulse">
-					{error}
-				</p>
-			) : (
-				<div className="flex flex-col items-center gap-3">
-					<svg
-						className="animate-spin h-10 w-10 text-orange-500"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-					>
-						<circle
-							className="opacity-25"
-							cx="12"
-							cy="12"
-							r="10"
-							stroke="currentColor"
-							strokeWidth="4"
-						></circle>
-						<path
-							className="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
-					<p className="text-gray-700 text-lg font-medium animate-pulse">
-						Verifying your account...
-					</p>
-				</div>
-			)}
-		</div>
-	);
+        return;
+      }
+
+      // ✅ SUCCESS CASE — SHOW TOAST HERE
+      toast.success("Google Login Successful 🎉", {
+        autoClose: 1500,
+        theme: "colored",
+      });
+
+      // 🔥 Delay redirect so toast is visible
+      setTimeout(() => {
+        router.replace("/dashboard");
+      }, 1300);
+    };
+
+    verifyUser();
+  }, [router]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center flex-col px-4">
+      {error ? (
+        <p className="text-red-500 text-lg font-semibold animate-pulse">
+          {error}
+        </p>
+      ) : (
+        <div className="flex flex-col items-center gap-3">
+          <svg
+            className="animate-spin h-10 w-10 text-orange-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <p className="text-gray-700 text-lg font-medium animate-pulse">
+            Verifying your account...
+          </p>
+        </div>
+      )}
+    </div>
+  );
 }
