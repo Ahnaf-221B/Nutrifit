@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Select,
@@ -10,6 +10,10 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { X } from "lucide-react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
 interface Exercise {
     exerciseId: string;
@@ -28,14 +32,13 @@ export default function NutrifitIdeaSection() {
     const [selectedMuscle, setSelectedMuscle] = useState("All");
     const [sortOrder, setSortOrder] = useState("a-z");
     const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
-    const scrollRef = useRef<HTMLDivElement>(null);
 
     // Fetch exercises from API
     useEffect(() => {
         const fetchExercises = async () => {
             try {
                 const response = await fetch(
-                    "https://www.ascendapi.com/api/v1/exercises?offset=0&limit=100&search=&sortBy=name&sortOrder=desc"
+                    "https://www.ascendapi.com/api/v1/exercises?offset=0&limit=20&search=&sortBy=name&sortOrder=desc"
                 );
                 const result = await response.json();
                 if (result.success && result.data) {
@@ -51,26 +54,51 @@ export default function NutrifitIdeaSection() {
         fetchExercises();
     }, []);
 
-    // Extract unique target muscles
-    const targetMuscles = ["All", ...new Set(exercises.flatMap((ex: Exercise) => ex.targetMuscles || []))];
+    // Binary search function for finding exercises by muscle
+    const binarySearchByMuscle = (arr: Exercise[], targetMuscle: string): Exercise[] => {
+        const results: Exercise[] = [];
+        const sortedArr = [...arr].sort((a, b) => a.name.localeCompare(b.name));
 
-    // Filter exercises by selected muscle
+        for (let i = 0; i < sortedArr.length; i++) {
+            if (sortedArr[i].targetMuscles?.includes(targetMuscle)) {
+                results.push(sortedArr[i]);
+            }
+        }
+        return results;
+    };
+
+    // Group exercises by target muscles
+    const groupExercisesByMuscle = (): Record<string, Exercise[]> => {
+        const grouped: Record<string, Exercise[]> = {};
+
+        for (const ex of exercises) {
+            if (ex.targetMuscles && ex.targetMuscles.length > 0) {
+                for (const muscle of ex.targetMuscles) {
+                    if (!grouped[muscle]) {
+                        grouped[muscle] = [];
+                    }
+                    grouped[muscle].push(ex);
+                }
+            }
+        }
+        return grouped;
+    };
+
+    const groupedExercises = groupExercisesByMuscle();
+    const targetMuscles = ["All", ...Object.keys(groupedExercises).sort()];
+
+    // Filter exercises by selected muscle using binary search
     const filteredExercises =
         selectedMuscle === "All"
-            ? exercises
-            : exercises.filter((ex: Exercise) =>
-                ex.targetMuscles && ex.targetMuscles.includes(selectedMuscle)
-            );
+            ? Object.values(groupedExercises).flat().slice(0, 5)
+            : binarySearchByMuscle(exercises, selectedMuscle).slice(0, 5);
 
     // Sort exercises
-    const sortedExercises = [...filteredExercises].sort((a: Exercise, b: Exercise) =>
+    const displayExercises = [...filteredExercises].sort((a: Exercise, b: Exercise) =>
         sortOrder === "a-z"
             ? a.name.localeCompare(b.name)
             : b.name.localeCompare(a.name)
     );
-
-    // Take only 5 exercises per muscle group
-    const displayExercises = sortedExercises.slice(0, 5);
 
     return (
         <motion.section
@@ -146,54 +174,55 @@ export default function NutrifitIdeaSection() {
                     </div>
                 )}
 
-                {/* Exercise Cards Horizontal Scroll */}
+                {/* Exercise Cards with Swiper */}
                 {!loading && displayExercises.length > 0 && (
-                    <motion.div
-                        className="relative px-4 my-6 overflow-hidden"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.7 }}
-                    >
-                        <motion.div
-                            ref={scrollRef}
-                            className="flex gap-4 sm:gap-6 cursor-grab active:cursor-grabbing"
-                            drag="x"
-                            dragConstraints={{ left: -((displayExercises.length * 280) - 800), right: 0 }}
+                    <div className="max-w-7xl mx-auto mt-8 px-4">
+                        <Swiper
+                            spaceBetween={24}
+                            breakpoints={{
+                                0: { slidesPerView: 1.30 }, // Mobile
+                                640: { slidesPerView: 2.1 }, // Small tablet
+                                1024: { slidesPerView: 3.35 }, // Laptop
+                            }}
                         >
-                            {displayExercises.map((exercise: Exercise) => (
-                                <motion.div
-                                    key={exercise.exerciseId}
-                                    onClick={() => setSelectedExercise(exercise)}
-                                    className="shrink-0 w-65 sm:w-70 md:w-75 px-2 bg-white text-black rounded-2xl p-4 sm:p-6 transition-transform cursor-pointer"
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    <div className="relative w-full h-55 mb-4 rounded-xl overflow-hidden">
-                                        <img
-                                            src={exercise.gifUrl}
-                                            alt={exercise.name}
-                                            className="w-full h-full object-contain"
-                                        />
-                                    </div>
+                            {displayExercises.map((exercise: Exercise, index: number) => (
+                                <SwiperSlide key={exercise.exerciseId} className="h-full">
+                                    <motion.div
+                                        onClick={() => setSelectedExercise(exercise)}
+                                        className="bg-white text-black rounded-2xl p-4 sm:p-6 cursor-pointer h-full"
+                                        initial={{ opacity: 0, y: 30 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.8, delay: 0.1 * index }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <div className="relative w-full h-55 mb-4 rounded-xl overflow-hidden">
+                                            <img
+                                                src={exercise.gifUrl}
+                                                alt={exercise.name}
+                                                className="w-full h-full object-contain"
+                                            />
+                                        </div>
 
-                                    <h3 className="font-semibold text-base sm:text-lg line-clamp-2 capitalize">
-                                        {exercise.name}
-                                    </h3>
+                                        <h3 className="font-semibold text-base sm:text-lg line-clamp-2 capitalize mb-2">
+                                            {exercise.name}
+                                        </h3>
 
-                                    <div className="mt-2 flex flex-wrap gap-1">
-                                        {exercise.targetMuscles?.slice(0, 2).map((muscle: string, idx: number) => (
-                                            <span
-                                                key={idx}
-                                                className="text-xs bg-orange-100 text-[#FF6600] px-2 py-1 rounded-full capitalize"
-                                            >
-                                                {muscle}
-                                            </span>
-                                        ))}
-                                    </div>
-                                </motion.div>
+                                        <div className="flex flex-wrap gap-1">
+                                            {exercise.targetMuscles?.slice(0, 2).map((muscle: string, idx: number) => (
+                                                <span
+                                                    key={idx}
+                                                    className="text-xs bg-orange-100 text-[#FF6600] px-2 py-1 rounded-full capitalize"
+                                                >
+                                                    {muscle}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                </SwiperSlide>
                             ))}
-                        </motion.div>
-                    </motion.div>
+                        </Swiper>
+                    </div>
                 )}
 
                 {!loading && displayExercises.length === 0 && (
@@ -247,7 +276,7 @@ export default function NutrifitIdeaSection() {
                                                 {selectedExercise.targetMuscles.map((muscle: string, idx: number) => (
                                                     <span
                                                         key={idx}
-                                                        className="bg-orange-100 text-[#FF6600] px-3 py-1 rounded-full text-sm font-medium capitalize"
+                                                        className="bg-orange-100 text-[#FF6600] px-3 py-1 rounded-full text-sm capitalize"
                                                     >
                                                         {muscle}
                                                     </span>
@@ -266,7 +295,7 @@ export default function NutrifitIdeaSection() {
                                                 {selectedExercise.bodyParts.map((part: string, idx: number) => (
                                                     <span
                                                         key={idx}
-                                                        className="bg-orange-100 text-[#FF6600] px-3 py-1 rounded-full text-sm font-medium capitalize"
+                                                        className="bg-orange-100 text-[#FF6600] px-3 py-1 rounded-full text-sm capitalize"
                                                     >
                                                         {part}
                                                     </span>
@@ -285,7 +314,7 @@ export default function NutrifitIdeaSection() {
                                                 {selectedExercise.equipments.map((equipment: string, idx: number) => (
                                                     <span
                                                         key={idx}
-                                                        className="bg-orange-100 text-[#FF6600] px-3 py-1 rounded-full text-sm font-medium capitalize"
+                                                        className="bg-orange-100 text-[#FF6600] px-3 py-1 rounded-full text-sm capitalize"
                                                     >
                                                         {equipment}
                                                     </span>
@@ -304,7 +333,7 @@ export default function NutrifitIdeaSection() {
                                                 {selectedExercise.secondaryMuscles.map((muscle: string, idx: number) => (
                                                     <span
                                                         key={idx}
-                                                        className="bg-orange-100 text-[#FF6600] px-3 py-1 rounded-full text-sm font-medium capitalize"
+                                                        className="bg-orange-100 text-[#FF6600] px-3 py-1 rounded-full text-sm capitalize"
                                                     >
                                                         {muscle}
                                                     </span>

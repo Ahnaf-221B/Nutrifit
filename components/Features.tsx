@@ -3,9 +3,8 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import "swiper/css";
-import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 
 // Features data
 const featuresData = [
@@ -84,11 +83,9 @@ const Features = () => {
         </motion.div>
 
         {/* Feature Cards with Swiper */}
-        <div className="max-w-7xl mx-auto mt-8">
+        <div className=" mt-8">
           <Swiper
-            modules={[Pagination]}
             spaceBetween={24}
-            pagination={{ clickable: true }}
             breakpoints={{
               0: { slidesPerView: 1.30 }, // Mobile
               640: { slidesPerView: 2.1 }, // Small tablet
@@ -96,7 +93,7 @@ const Features = () => {
             }}
           >
             {featuresData.map((feature, index) => (
-              <SwiperSlide key={feature.id} className="h-full pb-10">
+              <SwiperSlide key={feature.id} className="h-full">
                 <motion.div
                   className="relative h-80 md:h-96 rounded-[50px] overflow-hidden group cursor-pointer"
                   initial={{ opacity: 0, y: 30 }}
