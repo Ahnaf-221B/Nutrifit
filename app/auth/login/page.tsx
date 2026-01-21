@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ import GoogleIcon from "@/components/icons/GoogleIcon";
 import { BiDumbbell } from "react-icons/bi";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
+import { Bounce, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const data = [
   {
@@ -52,7 +54,7 @@ export default function Page() {
   const [error, setError] = useState("");
 
   // ✅ Get error from URL without useSearchParams
-  const errorParam = 
+  const errorParam =
     typeof window !== "undefined"
       ? new URLSearchParams(window.location.search).get("error")
       : null;
@@ -64,19 +66,34 @@ export default function Page() {
 
     const { email, password } = formData;
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
       setError(error.message);
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 4000,
+        theme: "colored",
+        transition: Bounce,
+      });
       setIsLoading(false);
       return;
     }
 
-    // redirect to dashboard
-    window.location.href = "/dashboard";
+    toast.success("Log In Successful 🎉", {
+      position: "top-right",
+      autoClose: 1500,
+      theme: "colored",
+      transition: Bounce,
+    });
+
+    // 🔥 DELAY REDIRECT SO TOAST CAN SHOW
+    setTimeout(() => {
+      window.location.href = "/dashboard";
+    }, 1800);
   };
 
   const handleGoogleLogin = async () => {
@@ -91,8 +108,15 @@ export default function Page() {
 
     if (error) {
       setError(error.message);
+      toast.error(error.message, {
+        position: "top-right",
+        autoClose: 4000,
+        theme: "colored",
+        transition: Bounce,
+      });
       setIsLoading(false);
     }
+    // OAuth will redirect automatically, no manual redirect needed
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -203,20 +227,6 @@ export default function Page() {
           <p className="text-sm text-gray-600 text-center mb-6">
             Continue your fitness journey
           </p>
-
-          {/* Show error from URL param */}
-          {errorParam === "not_registered" && (
-            <p className="text-red-500 text-center mb-4">
-              You are not registered. Please sign up first.
-            </p>
-          )}
-
-          {/* Error Message */}
-          {error && (
-            <div className="max-w-sm mx-auto mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600 text-center">{error}</p>
-            </div>
-          )}
 
           {/* Login Fields */}
           <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto">

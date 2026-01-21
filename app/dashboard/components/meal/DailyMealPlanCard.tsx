@@ -72,7 +72,8 @@ export default function DailyMealPlanCard({ userId }: { userId: string }) {
 	const totalMacros = protein + carbs + fat || 1;
 
 	return (
-		<div className="bg-white p-8 rounded-3xl shadow-2xl border-2 border-gray-100 relative overflow-hidden">
+		<div className="bg-white p-8 shadow-2xl border-2 border-gray-100 relative overflow-hidden">
+			{/* Glow */}
 			<div className="absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl opacity-10 bg-[#BFFF00]" />
 			<div className="relative z-10 mb-6 flex items-center gap-3">
 				<div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg bg-gradient-to-br from-[#BFFF00] to-[#9FDF00]">
