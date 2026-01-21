@@ -220,7 +220,7 @@ const Navbar = () => {
                 <SheetClose asChild>
                   <Link href="/auth/login">
                     <button className="w-full h-12 rounded-full border border-white bg-[#0000004D] text-white font-medium flex items-center justify-center gap-3 text-lg transition-all duration-300 ease-in-out hover:bg-[#FF6600] hover:text-black">
-                      Register
+                      Get Started
                       <ArrowUpRight className="w-5 h-5 bg-[#FF833B] text-black rounded-full p-[2px]" />
                     </button>
                   </Link>
