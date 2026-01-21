@@ -109,7 +109,7 @@ const Navbar = () => {
           <Link href="/">
             <h1
               className={cn(
-                "text-xl md:text-3xl font-mono-trust-display flex items-center justify-center bg-linear-to-r bg-clip-text text-transparent transition-all duration-300",
+                "text-xl md:text-3xl font-unbounded font-bold flex items-center justify-center bg-linear-to-r bg-clip-text text-transparent transition-all duration-300",
                 isPastThreshold
                   ? "from-[#1A232D] to-[#FF6600]"
                   : "from-[#EEEEEE] to-[#FF6600]"
