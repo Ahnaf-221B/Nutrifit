@@ -37,6 +37,43 @@ export default function TomorrowPlan({ userId }: { userId: string }) {
 		fetchTomorrowData();
 	}, [userId]);
 
+	function MacroLevelBar({
+		protein,
+		carbs,
+		fat,
+	}: {
+		protein: number;
+		carbs: number;
+		fat: number;
+	}) {
+		const maxProtein = 200;
+		const maxCarbs = 300;
+		const maxFat = 100;
+
+		const pPercent = Math.min((protein / maxProtein) * 100, 100);
+		const cPercent = Math.min((carbs / maxCarbs) * 100, 100);
+		const fPercent = Math.min((fat / maxFat) * 100, 100);
+
+		return (
+			<div className="w-full h-3 bg-white/10 rounded-full overflow-hidden flex">
+				<div
+					className="h-full bg-[#BFFF00]"
+					style={{ width: `${pPercent / 3}%` }}
+				/>
+				<div
+					className="h-full bg-[#FF6600]"
+					style={{ width: `${cPercent / 3}%` }}
+				/>
+				<div
+					className="h-full bg-gray-400"
+					style={{ width: `${fPercent / 3}%` }}
+				/>
+			</div>
+		);
+	}
+
+
+
 	if (loading)
 		return (
 			<div className="p-6 bg-slate-50 animate-pulse rounded-xl">
