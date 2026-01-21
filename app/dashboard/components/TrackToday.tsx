@@ -119,7 +119,7 @@ export default function TrackToday({ userId }: { userId: string }) {
 	}
 
 	return (
-		<div className="bg-[#1A232D] text-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl mx-auto">
+		<div className="bg-[#1A232D] text-white rounded-2xl shadow-2xl p-6 w-full max-w-2xl mx-auto mb-6">
 			{/* Toast Notification */}
 			{toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
