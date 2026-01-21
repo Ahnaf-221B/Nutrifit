@@ -83,7 +83,7 @@ export default function WeeklyProgress({ userId }: { userId: string }) {
 
 	return (
 		<div className="space-y-6 w-full md:pb-6">
-			<div className="bg-white p-4 sm:p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-100 w-full">
+			<div className="bg-white p-4 sm:p-6 md:p-8 rounded-2xl shadow-2xl border border-gray-100 w-full">
 				<div className="flex justify-between items-center mb-6">
 					<h2 className="text-xl sm:text-2xl font-black text-[#1A232D] flex items-center gap-2">
 						<FaChartLine className="text-[#BFFF00]" />

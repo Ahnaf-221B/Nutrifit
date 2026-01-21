@@ -131,7 +131,7 @@ export default function UpdateProfile({ onClose }: UpdateProfileProps) {
                 </div>
             )}
 
-            <div className="bg-white rounded-lg shadow-lg border border-gray-200 relative overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 relative overflow-hidden">
                 {/* Close Button - Fixed */}
                 {onClose && (
                     <button

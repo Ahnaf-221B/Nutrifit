@@ -105,30 +105,34 @@ const Features = () => {
                   <img
                     src={feature.image}
                     alt={feature.title}
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   />
 
                   {/* Dark Overlay */}
-                  <div className="absolute inset-0 bg-black/50 group-hover:bg-black/75 transition-colors duration-300"></div>
+                  <div className="absolute inset-0 z-10 bg-linear-to-t from-black/80 via-black/50 to-black/30"></div>
 
                   {/* Content */}
-                  <div className="relative h-full flex flex-col justify-between p-8 text-white">
+                  <div className="absolute inset-0 z-30 flex h-full flex-col justify-between p-6">
                     {/* Number */}
-                    <div className="flex items-start justify-between">
-                      <div className="text-[30px] md:text-[45px] font-bold text-white/90">
-                        {feature.id}
-                      </div>
-                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="text-4xl font-bold text-white"
+                    >
+                      {feature.id}
+                    </motion.div>
 
                     {/* Bottom Content */}
-                    <div>
-                      <h3 className="font-semibold text-2xl md:text-[30px] mb-3">
-                        {feature.title}
-                      </h3>
-                      <p className="md:text-lg text-sm leading-relaxed opacity-90">
-                        {feature.description}
-                      </p>
-                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 + 0.2 }}
+                      className="space-y-2"
+                    >
+                      <h3 className="text-2xl font-bold text-white">{feature.title}</h3>
+                      <p className="text-sm text-gray-200">{feature.description}</p>
+                    </motion.div>
                   </div>
                 </motion.div>
               </SwiperSlide>

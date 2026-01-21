@@ -299,7 +299,7 @@ export default function DailyMealPlanCard({ userId }: { userId: string }) {
 										<div className="space-y-3">
 											<div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
 												<span className="font-medium text-gray-700">Protein</span>
-												<span className="font-bold text-[#BFFF00] bg-[#BFFF00]/20 px-3 py-1 rounded-full">
+												<span className="font-bold text-orange-600 bg-orange-100 px-3 py-1 rounded-full">
 													{Math.round((selectedMeal.calories / totalCalories) * protein)}g
 												</span>
 											</div>
@@ -311,7 +311,7 @@ export default function DailyMealPlanCard({ userId }: { userId: string }) {
 											</div>
 											<div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
 												<span className="font-medium text-gray-700">Fats</span>
-												<span className="font-bold text-gray-600 bg-gray-200 px-3 py-1 rounded-full">
+												<span className="font-bold text-orange-600 bg-orange-100 px-3 py-1 rounded-full">
 													{Math.round((selectedMeal.calories / totalCalories) * fat)}g
 												</span>
 											</div>

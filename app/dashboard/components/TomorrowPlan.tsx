@@ -83,7 +83,7 @@ export default function TomorrowPlan({ userId }: { userId: string }) {
 	if (error) return <div className="p-6 text-red-500">{error}</div>;
 
 	return (
-		<div className="bg-orange-50 p-6 rounded-2xl border border-orange-200 shadow-sm">
+		<div className="bg-orange-50 p-6 rounded-2xl border border-orange-200 shadow-2xl">
 			<div className="flex justify-between items-start mb-4">
 				<div>
 					<h2 className="text-xl font-bold text-slate-900">
