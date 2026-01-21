@@ -23,9 +23,6 @@ const navLinks = [
   { href: "/dashboard/meals", label: "Meals", icon: UtensilsCrossed },
   { href: "/dashboard/workouts", label: "Workouts", icon: Dumbbell },
   { href: "/dashboard/chat", label: "Coach", icon: HeartPulse },
-  { href: "/dashboard/activity", label: "Activity", icon: Activity },
-  { href: "/dashboard/progress", label: "Progress", icon: BarChart3 },
-  { href: "/dashboard/profile/update", label: "Profile", icon: User },
 ];
 
 export default function DashboardSidebar() {

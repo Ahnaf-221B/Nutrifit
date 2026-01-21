@@ -22,7 +22,7 @@ export default function MealPlan() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-white">
+			<div className="min-h-screen flex items-center justify-center">
 				<div className="text-center">
 					<div className="flex items-center justify-center space-x-3 mb-4">
 						<div className="w-4 h-4 rounded-full animate-bounce" style={{ backgroundColor: '#BFFF00' }}></div>
@@ -39,8 +39,8 @@ export default function MealPlan() {
 
 	if (!user) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-white">
-				<div className="text-center p-8 bg-white rounded-3xl shadow-2xl border-2 border-gray-200 max-w-md">
+			<div className="min-h-screen flex items-center justify-center">
+				<div className="text-center p-8 max-w-md">
 					<div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF6600 0%, #FF8833 100%)' }}>
 						<Target className="text-white" size={32} />
 					</div>
@@ -56,25 +56,25 @@ export default function MealPlan() {
 	}
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+		<div className="min-h-screen pb-12 px-4 sm:px-6 lg:px-8 relative">
 			{/* Decorative Background Elements */}
-			<div className="absolute top-20 right-10 w-72 h-72 rounded-full blur-3xl opacity-10 pointer-events-none" style={{ backgroundColor: '#BFFF00' }}></div>
-			<div className="absolute bottom-20 left-10 w-96 h-96 rounded-full blur-3xl opacity-10 pointer-events-none" style={{ backgroundColor: '#FF6600' }}></div>
-			
+			<div className="absolute top-20 right-10 w-72 h-72 rounded-full blur-3xl opacity-10 pointer-events-none" style={{ backgroundColor: '#FF6600' }}></div>
+			<div className="absolute bottom-20 left-10 w-96 h-96 rounded-full blur-3xl opacity-10 pointer-events-none" style={{ backgroundColor: '#BFFF00' }}></div>
+
 			{/* Header Section */}
 			<div className="max-w-4xl mx-auto text-center mb-12 relative z-10">
 				<div className="inline-block mb-6">
-					<div className="flex items-center gap-3 px-6 py-3 bg-white rounded-full shadow-lg border-2 border-gray-200">
+					<div className="flex items-center gap-3 px-3 py-2 bg-white rounded-full shadow-lg border-2 border-gray-200">
 						<Sparkles size={20} style={{ color: '#BFFF00' }} />
-						<span className="text-sm font-bold uppercase tracking-wide" style={{ color: '#1A232D' }}>
+						<span className="text-xs font-bold uppercase tracking-wide text-[#1A232D]">
 							Personalized For You
 						</span>
 					</div>
 				</div>
-				
+
 				<h1 className="text-5xl md:text-6xl font-black tracking-tight mb-4" style={{ color: '#1A232D' }}>
 					Your Daily
-					<span className="block mt-2 text-transparent bg-clip-text" style={{ 
+					<span className="block mt-2 text-transparent bg-clip-text" style={{
 						background: 'linear-gradient(135deg, #BFFF00 0%, #9FDF00 100%)',
 						WebkitBackgroundClip: 'text',
 						WebkitTextFillColor: 'transparent'
@@ -82,7 +82,7 @@ export default function MealPlan() {
 						Meal Plan
 					</span>
 				</h1>
-				
+
 				<p className="text-gray-600 text-lg md:text-xl font-medium max-w-2xl mx-auto">
 					Fuel your body with a personalized nutrition plan based on your goals and lifestyle.
 				</p>
@@ -91,7 +91,7 @@ export default function MealPlan() {
 			{/* Stats Cards Row */}
 			<div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 relative z-10">
 				{/* Stat 1 */}
-				<div className="bg-white p-6 rounded-2xl shadow-lg border-2 border-gray-200 hover:shadow-xl transition-all duration-300 hover:scale-105">
+				<div className="bg-white p-6 rounded-2xl shadow-lg border-2 border-gray-200 hover:shadow-xl">
 					<div className="flex items-center gap-3 mb-2">
 						<div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #BFFF00 0%, #9FDF00 100%)' }}>
 							<Target size={20} style={{ color: '#1A232D' }} />
@@ -106,7 +106,7 @@ export default function MealPlan() {
 				</div>
 
 				{/* Stat 2 */}
-				<div className="bg-white p-6 rounded-2xl shadow-lg border-2 border-gray-200 hover:shadow-xl transition-all duration-300 hover:scale-105">
+				<div className="bg-white p-6 rounded-2xl shadow-lg border-2 border-gray-200 hover:shadow-xl">
 					<div className="flex items-center gap-3 mb-2">
 						<div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #FF6600 0%, #FF8833 100%)' }}>
 							<TrendingUp className="text-white" size={20} />
@@ -121,7 +121,7 @@ export default function MealPlan() {
 				</div>
 
 				{/* Stat 3 */}
-				<div className="bg-white p-6 rounded-2xl shadow-lg border-2 border-gray-200 hover:shadow-xl transition-all duration-300 hover:scale-105">
+				<div className="bg-white p-6 rounded-2xl shadow-lg border-2 border-gray-200 hover:shadow-xl">
 					<div className="flex items-center gap-3 mb-2">
 						<div className="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-200">
 							<Sparkles size={20} style={{ color: '#1A232D' }} />
@@ -137,13 +137,13 @@ export default function MealPlan() {
 			</div>
 
 			{/* Meal Plan Card */}
-			<div className="max-w-4xl mx-auto relative z-10">
+			<div className="relative overflow-hidden">
 				<DailyMealPlanCard userId={user.id} />
 			</div>
 
 			{/* Footer Tip Section */}
 			<div className="max-w-4xl mx-auto mt-12 relative z-10">
-				<div className="bg-gradient-to-r from-gray-50 to-white p-8 rounded-3xl shadow-lg border-2 border-gray-200 text-center">
+				<div className="p-8 rounded-3xl text-center">
 					<div className="w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #BFFF00 0%, #9FDF00 100%)' }}>
 						<TrendingUp size={24} style={{ color: '#1A232D' }} />
 					</div>
