@@ -93,7 +93,7 @@ export default function TomorrowPlan({ userId }: { userId: string }) {
 				</div>
 
 				<div className="grid grid-cols-2 gap-4">
-					<div className="bg-gradient-to-br from-white/5 to-transparent p-4 rounded-2xl border border-white/5">
+					<div className="bg-linear-to-br from-white/5 to-transparent p-4 rounded-2xl border border-white/5">
 						<div className="flex items-center gap-2 text-gray-500 text-[10px] font-black uppercase mb-2">
 							<FaFireAlt className="text-[#FF6600]" /> Target Energy
 						</div>
@@ -105,7 +105,7 @@ export default function TomorrowPlan({ userId }: { userId: string }) {
 						</p>
 					</div>
 
-					<div className="bg-gradient-to-br from-white/5 to-transparent p-4 rounded-2xl border border-white/5">
+					<div className="bg-linear-to-br from-white/5 to-transparent p-4 rounded-2xl border border-white/5">
 						<div className="flex items-center gap-2 text-gray-500 text-[10px] font-black uppercase mb-2">
 							<FaDumbbell className="text-[#BFFF00]" /> Intensity
 						</div>

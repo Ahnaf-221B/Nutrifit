@@ -22,7 +22,7 @@ export default function WorkoutPlan() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
+			<div className="min-h-screen flex items-center justify-center ">
 				<div className="text-center">
 					<div className="flex items-center justify-center space-x-3 mb-4">
 						<div className="w-4 h-4 rounded-full animate-bounce" style={{ backgroundColor: '#BFFF00' }}></div>
@@ -137,7 +137,7 @@ export default function WorkoutPlan() {
 			</div>
 
 			{/* Workout Card */}
-			<div className="relative">
+			<div className="relative overflow-hidden">
 				<DailyWorkoutCard userId={user.id} />
 			</div>
 
