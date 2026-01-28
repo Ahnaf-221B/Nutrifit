@@ -4,11 +4,29 @@ import DailyMealPlanCard from "../components/meal/DailyMealPlanCard";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabaseClient";
 import { Sparkles, TrendingUp, Target } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function MealPlan() {
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 
+		const router = useRouter();
+		useEffect(() => {
+		async function getSessionUser() {
+			const {
+				data: { user },
+			} = await supabase.auth.getUser();
+
+			if (!user) {
+				window.location.href = "/auth/login";
+			} else {
+				setUser(user);
+			}
+			setLoading(false);
+		}
+
+		getSessionUser();
+	}, [router]);
 	useEffect(() => {
 		async function getSessionUser() {
 			const {

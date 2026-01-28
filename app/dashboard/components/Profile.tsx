@@ -33,7 +33,7 @@ export default function UpdateProfile({ onClose }: UpdateProfileProps) {
         fitness_goal: "",
         activity_level: "",
     });
-
+    
     useEffect(() => {
         const getProfile = async () => {
             setLoading(true);

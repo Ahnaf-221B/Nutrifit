@@ -4,11 +4,29 @@ import DailyWorkoutCard from "../components/workout/DailyWorkoutCard";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabaseClient";
 import { Sparkles, TrendingUp, Target, Dumbbell } from "lucide-react";
+import { useRouter } from "next/dist/client/components/navigation";
 
 export default function WorkoutPlan() {
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
-
+		const router = useRouter();
+		
+	useEffect(() => {
+			async function getSessionUser() {
+				const {
+					data: { user },
+				} = await supabase.auth.getUser();
+	
+				if (!user) {
+					window.location.href = "/auth/login";
+				} else {
+					setUser(user);
+				}
+				setLoading(false);
+			}
+	
+			getSessionUser();
+		}, [router]);
 	useEffect(() => {
 		async function getSessionUser() {
 			const {

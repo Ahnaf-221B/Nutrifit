@@ -16,6 +16,8 @@ import EyeOffIcon from "@/components/icons/EyeOffIcon";
 import EyeIcon from "@/components/icons/EyeIcon";
 import { BiDumbbell } from "react-icons/bi";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabaseClient";
+import { Bounce, toast } from "react-toastify";
 
 const data = [
 	{
@@ -45,8 +47,7 @@ const data = [
 ];
 
 
-import { supabase } from "@/lib/supabaseClient";
-import { Bounce, toast } from "react-toastify";
+
 
 export async function signUpUser(formData: any) {
 	const {
@@ -66,6 +67,10 @@ export async function signUpUser(formData: any) {
 	const { data, error } = await supabase.auth.signUp({
 		email,
 		password,
+		options: {
+			// This dynamically detects if you are on localhost or production
+			emailRedirectTo: `${window.location.origin}/auth/callback`,
+		},
 	});
 
 	if (error) return { error };
