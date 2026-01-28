@@ -4,102 +4,75 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 export default function AuthCallback() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+	const router = useRouter();
+	const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const verifyUser = async () => {
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
+	useEffect(() => {
+		const verifyUser = async () => {
+			// 1. Get the session (this handles the #access_token from the email link)
+			const {
+				data: { session },
+				error: sessionError,
+			} = await supabase.auth.getSession();
+			const user = session?.user;
 
-      if (userError || !user) {
-        setError("Unable to get user session.");
-        toast.error("Google login failed ❌", { theme: "colored" });
-        return;
-      }
+			if (sessionError || !user) {
+				setError("Session not found or expired.");
+				toast.error("Verification failed ❌");
+				setTimeout(() => router.replace("/auth/login"), 2000);
+				return;
+			}
 
-      // 🔍 Check if user email exists in profiles table
-      const { data: profiles, error: profilesError } = await supabase
-        .from("profiles")
-        .select("id, email")
-        .eq("email", user.email)
-        .single();
+			// 2. Check if the user has a completed profile
+			const { data: profile, error: profileError } = await supabase
+				.from("profiles")
+				.select("id")
+				.eq("id", user.id)
+				.single();
 
-      if (profilesError || !profiles) {
-        // ❌ User not registered → delete auth user
-        await fetch("/api/delete-user", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: user.id }),
-        });
+			if (profileError || !profile) {
+				// BUG FIX: New Google user or email user who didn't finish registration
+				console.log("No profile found. Cleaning up auth user...");
 
-        await supabase.auth.signOut();
+				await fetch("/api/delete-user", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ userId: user.id }),
+				});
 
-        toast.error("You are not registered. Please sign up first ❌", {
-          autoClose: 2000,
-          theme: "colored",
-        });
+				await supabase.auth.signOut();
+				toast.error("Account not found. Please register first ❌", {
+					theme: "colored",
+				});
 
-        setTimeout(() => {
-          router.replace("/auth/login?error=not_registered");
-        }, 1800);
+				setTimeout(() => {
+					router.replace("/auth/register?error=not_registered");
+				}, 1500);
+				return;
+			}
 
-        return;
-      }
+			// 3. Success!
+			toast.success("Welcome to NutriFit! 🎉", { theme: "colored" });
+			setTimeout(() => router.replace("/dashboard"), 1200);
+		};
 
-      // ✅ SUCCESS CASE — SHOW TOAST HERE
-      toast.success("Google Login Successful 🎉", {
-        autoClose: 1500,
-        theme: "colored",
-      });
+		verifyUser();
+	}, [router]);
 
-      // 🔥 Delay redirect so toast is visible
-      setTimeout(() => {
-        router.replace("/dashboard");
-      }, 1300);
-    };
-
-    verifyUser();
-  }, [router]);
-
-  return (
-    <div className="min-h-screen flex items-center justify-center flex-col px-4">
-      {error ? (
-        <p className="text-red-500 text-lg font-semibold animate-pulse">
-          {error}
-        </p>
-      ) : (
-        <div className="flex flex-col items-center gap-3">
-          <svg
-            className="animate-spin h-10 w-10 text-orange-500"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          <p className="text-gray-700 text-lg font-medium animate-pulse">
-            Verifying your account...
-          </p>
-        </div>
-      )}
-    </div>
-  );
+	return (
+		<div className="min-h-screen flex items-center justify-center flex-col px-4 bg-slate-50">
+			{error ? (
+				<p className="text-red-500 font-bold text-center">{error}</p>
+			) : (
+				<div className="flex flex-col items-center gap-4">
+					<div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+					<p className="text-slate-600 font-medium animate-pulse text-lg">
+						Finalizing your login...
+					</p>
+				</div>
+			)}
+		</div>
+	);
 }
