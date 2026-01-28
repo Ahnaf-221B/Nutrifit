@@ -63,13 +63,15 @@ export async function signUpUser(formData: any) {
 		activity_level,
 	} = formData;
 
+	const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+
 	// 1️⃣ Create user with REAL email
 	const { data, error } = await supabase.auth.signUp({
 		email,
 		password,
 		options: {
 			// This dynamically detects if you are on localhost or production
-			emailRedirectTo: `${window.location.origin}/auth/callback`,
+			emailRedirectTo: `${baseUrl}/auth/callback`,
 		},
 	});
 
