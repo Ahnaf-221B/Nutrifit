@@ -48,7 +48,9 @@ export default function AuthCallback() {
 				});
 
 				setTimeout(() => {
-					router.replace("/auth/register?error=not_registered");
+					router.replace(
+						`${window.location.origin}/auth/register?error=not_registered`,
+					);
 				}, 1500);
 				return;
 			}
