@@ -7,63 +7,73 @@ import { toast } from "react-toastify";
 
 export default function AuthCallback() {
 	const router = useRouter();
-	const [verifying, setVerifying] = useState(true);
 
 	useEffect(() => {
 		const handleAuth = async () => {
 			try {
-				// 1. Check if there is a 'code' in the URL (Production PKCE flow)
+				// 1. Manually check for the 'code' parameter in the URL
 				const params = new URLSearchParams(window.location.search);
 				const code = params.get("code");
 
 				if (code) {
-					// This "swaps" the URL code for a real login session
-					await supabase.auth.exchangeCodeForSession(code);
+					// 🛑 ESSENTIAL: This converts the URL code into a real session on the live site
+					const { error: exchangeError } =
+						await supabase.auth.exchangeCodeForSession(code);
+					if (exchangeError) throw exchangeError;
 				}
 
-				// 2. Now get the user
+				// 2. Fetch the user now that the session should be established
 				const {
 					data: { user },
 					error: userError,
 				} = await supabase.auth.getUser();
 
 				if (userError || !user) {
-					throw new Error("No user found after verification.");
+					throw new Error("User session could not be established.");
 				}
 
-				// 3. Check for Profile
+				// 3. STRICT GATEKEEPER: Check if the user exists in your PROFILES table
 				const { data: profile, error: profileError } = await supabase
 					.from("profiles")
 					.select("id")
 					.eq("id", user.id)
-					.maybeSingle(); // Use maybeSingle to avoid throw on empty
+					.maybeSingle();
+
+				if (profileError) throw profileError;
 
 				if (!profile) {
-					// 🛑 BUG DETECTED: User logged in with Google but has NO profile
-					console.warn("Unregistered Google user detected. Cleaning up...");
+					// ❌ GHOST USER DETECTED: They have a Google account but NO NutriFit profile
+					console.warn("Unregistered Google account. Deleting from Auth...");
 
+					// Trigger your API to remove them from Supabase Auth entirely
 					await fetch("/api/delete-user", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
 						body: JSON.stringify({ userId: user.id }),
 					});
 
+					// Clear local session so they are truly logged out
 					await supabase.auth.signOut();
-					toast.error("Account not found. Redirecting to registration...", {
-						theme: "colored",
-					});
+
+					toast.error(
+						"Please sign up first to create your fitness profile! ❌",
+						{
+							theme: "colored",
+							autoClose: 3000,
+						},
+					);
+
+					// Redirect back to register page
 					router.replace("/auth/register?error=not_registered");
 					return;
 				}
 
-				// 4. Success Case
-				toast.success("Welcome back! 🎉");
+				// ✅ SUCCESS: Profile exists, proceed to dashboard
+				toast.success("Welcome back to NutriFit! 🎉");
 				router.replace("/dashboard");
-			} catch (err) {
-				console.error("Auth error:", err);
+			} catch (err: any) {
+				console.error("Auth Exception:", err.message);
 				router.replace("/auth/login?error=auth_failed");
-			} finally {
-				setVerifying(false);
 			}
 		};
 
@@ -74,7 +84,7 @@ export default function AuthCallback() {
 		<div className="min-h-screen flex items-center justify-center flex-col bg-white">
 			<div className="w-12 h-12 border-4 border-[#FF6600] border-t-transparent rounded-full animate-spin"></div>
 			<p className="mt-4 text-gray-600 font-medium animate-pulse">
-				Verifying secure connection...
+				Syncing with NutriFit Cloud...
 			</p>
 		</div>
 	);
