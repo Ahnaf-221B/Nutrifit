@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🥗 NutriFit — AI-Powered Fitness & Nutrition Planner
 
-## Getting Started
+**NutriFit** is a personalized fitness and nutrition planning application designed to help users make informed decisions about their daily nutrition, physical activity, and fitness goals. By combining calorie estimation, personalized recommendations, and an AI-powered chatbot, NutriFit aims to make fitness planning more accessible and convenient.
 
-First, run the development server:
+## ✨ Features
+
+- **Personalized Nutrition Planning:** Generate daily nutrition recommendations based on user information and activity level.
+- **TDEE Calculator:** Estimate Total Daily Energy Expenditure (TDEE) to understand daily energy needs.
+- **Fitness Goal Support:** Get recommendations tailored to individual fitness objectives.
+- **Exercise Recommendations:** Explore suggested physical activities based on fitness needs.
+- **AI Fitness Assistant:** Interact with an AI-powered chatbot using Google's Gemini 2.5 Flash model to ask fitness and nutrition-related questions.
+- **Interactive User Interface:** Navigate a modern, responsive interface designed for a smooth user experience.
+- **Data Visualization:** Present relevant fitness and nutrition information in an easy-to-understand format.
+
+## 🛠️ Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| Next.js | React framework and application routing |
+| React | Component-based user interface |
+| TypeScript | Type safety and maintainable code |
+| Tailwind CSS | Responsive styling |
+| Supabase | Backend services and authentication integration |
+| Google Gemini 2.5 Flash | AI-powered chatbot |
+| Recharts | Data visualization |
+| Lucide React | Interface icons |
+
+### Live Link: https://nutrifitbd.vercel.app/
+
+## 🚀 Getting Started
+
+Follow these steps to run NutriFit locally.
+
+### Prerequisites
+
+Make sure you have installed:
+
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- npm
+- Git
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Ahnaf-221B/Nutrifit.git
+```
+
+### 2. Navigate to the project directory
+
+```bash
+cd Nutrifit
+```
+
+### 3. Install dependencies
+
+```bash
+npm install
+```
+
+### 4. Configure environment variables
+
+Create a `.env.local` file in the root directory and add the environment variables required by your application.
+
+```env
+# Supabase configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Google Gemini API
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+
+### 5. Start the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 6. Build for production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+To start the production server after a successful build:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📂 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The application follows a Next.js App Router structure.
 
-## Deploy on Vercel
+```text
+Nutrifit/
+├── app/                # Application routes and pages
+├── components/         # Reusable UI components
+├── lib/                # Shared utilities and application logic
+├── public/              # Static assets
+├── .env.local           # Local environment variables (not committed)
+├── package.json         # Dependencies and scripts
+└── README.md            # Project documentation
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧠 How It Works
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Enter personal information:** Provide the information needed to estimate daily energy requirements.
+2. **Calculate energy needs:** Estimate TDEE using the user's activity level and relevant personal inputs.
+3. **Generate recommendations:** Use the calculated energy needs and fitness goals to provide nutrition guidance.
+4. **Explore exercise suggestions:** Review recommended physical activities.
+5. **Ask the AI assistant:** Use the integrated chatbot for general fitness and nutrition questions.
+
+*Note: Recommendations are intended for general informational purposes and should not replace professional medical or nutritional advice.*
+
+## 🔐 Security
+
+- Keep API keys and private credentials out of source control.
+- Configure Supabase authentication and database access policies appropriately.
+- Validate user inputs and protect sensitive user information.
+- Keep server-side secrets on the server rather than exposing them through public environment variables.
+
+## 🗺️ Future Improvements
+
+Potential enhancements include:
+
+- Personalized meal plans with food and nutrient breakdowns.
+- Daily meal and activity tracking.
+- Progress dashboards and historical reports.
+- Customizable workout routines.
+- Improved AI recommendations based on user preferences.
+- Additional nutrition data and regional food options.
+
+## 🤝 Contributing
+
+Contributions, suggestions, and bug reports are welcome.
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Push the branch to your fork.
+5. Open a pull request describing your changes.
+
+## 👨‍💻 Author
+
+**Ahnaf Hossain**
+
+- GitHub: [@Ahnaf-221B](https://github.com/Ahnaf-221B)
+- Project Repository: [NutriFit](https://github.com/Ahnaf-221B/Nutrifit)
+
+---
+
+⭐ If you find NutriFit interesting, consider starring the repository!
+
+**Disclaimer:** NutriFit provides general fitness and nutrition information for educational purposes. Individual results may vary, and its recommendations are not a substitute for professional healthcare advice.
